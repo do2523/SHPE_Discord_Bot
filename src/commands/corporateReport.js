@@ -6,7 +6,7 @@ import { isEboard } from "../utils/permissions.js";
 // Build the /corporate-report slash command.
 export const data = new SlashCommandBuilder()
   .setName("corporate-report")
-  .setDescription("View Corporate Cabinet attendance progress");
+  .setDescription("View Corporate attendance progress");
 
 // Runs whenever someone uses /corporate-report.
 export async function execute(interaction) {
@@ -26,18 +26,18 @@ export async function execute(interaction) {
     throw membersError;
   }
 
-  // Get attendance records only for Corporate Cabinet events.
+  // Get attendance records only for Corporate events.
   const { data: attendance, error } = await supabase
     .from("attendance")
     .select(
       ` 
                 member_id, 
                 events!inner ( 
-                    cabinet 
+                    event_type 
                 ) 
             `,
     )
-    .eq("events.cabinet", "Corporate");
+    .eq("events.event_type", "Corporate");
 
   if (error) {
     throw error;
@@ -66,9 +66,9 @@ export async function execute(interaction) {
     );
   });
 
-  // Send the completed Corporate Cabinet report.
+  // Send the completed Corporate report.
   await interaction.reply({
-    content: `## Corporate Cabinet Report\n\n` + lines.join("\n"),
+    content: `## Corporate Report\n\n` + lines.join("\n"),
 
     flags: MessageFlags.Ephemeral,
   });

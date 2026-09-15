@@ -6,7 +6,7 @@ import { isEboard } from "../utils/permissions.js";
 // Build the /corporate-status slash command.
 export const data = new SlashCommandBuilder()
   .setName("corporate-status")
-  .setDescription("Check a member's Corporate Cabinet requirement")
+  .setDescription("Check a member's Corporate requirement")
 
   // Let the E-board member choose which Discord user to check.
   .addUserOption((option) =>
@@ -46,22 +46,21 @@ export async function execute(interaction) {
     });
   }
 
-  // Get this member's attendance records, but only for Corporate Cabinet events.
+  // Get this member's attendance records, but only for Corporate events.
+  // !inner removes attendance records whose related event does not match the filter.
   const { data: attendance, error } = await supabase
     .from("attendance")
     .select(
       `
                 id,
-
-                // !inner means that if the related event does NOT match our event filter, the entire attendance record is removed.
                 events!inner (
-                    cabinet
+                    event_type
                 )
             `,
     )
 
     .eq("member_id", member.id)
-    .eq("events.cabinet", "Corporate");
+    .eq("events.event_type", "Corporate");
 
   if (error) {
     throw error;
@@ -73,7 +72,7 @@ export async function execute(interaction) {
 
   await interaction.reply({
     content:
-      `## Corporate Cabinet Status\n` +
+      `## Corporate Status\n` +
       `**Member:** ${discordUser.username}\n` +
       `**Corporate events attended:** ${count}/3\n` +
       `**Status:** ${
