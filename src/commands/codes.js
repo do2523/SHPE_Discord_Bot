@@ -23,7 +23,6 @@ export async function execute(interaction) {
   const { data: events, error } = await supabase
     .from("events")
     .select("name, start_time, attendance_code")
-    .lt("end_time", new Date().toISOString())
     .order("start_time", { ascending: false })
     .limit(5);
 
