@@ -10,6 +10,7 @@ import * as createEvent from "./commands/createEvent.js";
 import * as eventAttendance from "./commands/eventAttendance.js";
 import * as corporateStatus from "./commands/corporateStatus.js";
 import * as corporateReport from "./commands/corporateReport.js";
+import * as codes from "./commands/codes.js";
 
 // Put all command modules into one array.
 const commandModules = [
@@ -21,6 +22,7 @@ const commandModules = [
   eventAttendance,
   corporateStatus,
   corporateReport,
+  codes,
 ];
 
 const commands = new Map(

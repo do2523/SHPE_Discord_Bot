@@ -10,6 +10,7 @@ import { data as createEvent } from "./commands/createEvent.js";
 import { data as eventAttendance } from "./commands/eventAttendance.js";
 import { data as corporateStatus } from "./commands/corporateStatus.js";
 import { data as corporateReport } from "./commands/corporateReport.js";
+import { data as codes } from "./commands/codes.js";
 
 // command.toJSON() converts each SlashCommandBuilder object into a plain JSON object that Discord's API can understand.
 const commands = [
@@ -21,6 +22,7 @@ const commands = [
   eventAttendance,
   corporateStatus,
   corporateReport,
+  codes,
 ].map((command) => command.toJSON());
 
 // Create a REST client that will communicate with Discord's API.
@@ -32,16 +34,9 @@ const rest = new REST({
 
 try {
   console.log("Registering Discord slash commands...");
-  await rest.put(
-    Routes.applicationGuildCommands(
-      process.env.DISCORD_CLIENT_ID,
-      process.env.DISCORD_GUILD_ID,
-    ),
-
-    {
-      body: commands,
-    },
-  );
+  await rest.put(Routes.applicationCommands(process.env.DISCORD_CLIENT_ID), {
+    body: commands,
+  });
 
   console.log("Slash commands registered.");
 } catch (error) {
