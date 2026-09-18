@@ -2,6 +2,7 @@ import { MessageFlags, SlashCommandBuilder } from "discord.js";
 
 import { DateTime } from "luxon";
 import { supabase } from "../services/supabase.js";
+import { isEboard } from "../utils/permissions.js";
 
 const TIME_ZONE = "America/New_York";
 
@@ -12,6 +13,13 @@ export const data = new SlashCommandBuilder()
 
 // Runs whenever someone uses /codes.
 export async function execute(interaction) {
+  if (!isEboard(interaction)) {
+    return interaction.reply({
+      content: "Only E-board members can use this command.",
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+
   const { data: events, error } = await supabase
     .from("events")
     .select("name, start_time, attendance_code")
