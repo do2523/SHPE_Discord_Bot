@@ -46,7 +46,7 @@ export async function execute(interaction) {
     });
   }
 
-  // Get this member's attendance records, but only for Corporate events.
+  // Get this member's attendance records, but only for the Corporate cabinet.
   // !inner removes attendance records whose related event does not match the filter.
   const { data: attendance, error } = await supabase
     .from("attendance")
@@ -54,13 +54,13 @@ export async function execute(interaction) {
       `
                 id,
                 events!inner (
-                    event_type
+                  cabinet
                 )
             `,
     )
 
     .eq("member_id", member.id)
-    .eq("events.event_type", "Corporate");
+    .eq("events.cabinet", "Corporate");
 
   if (error) {
     throw error;

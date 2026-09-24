@@ -26,18 +26,18 @@ export async function execute(interaction) {
     throw membersError;
   }
 
-  // Get attendance records only for Corporate events.
+  // Get attendance records only for the Corporate cabinet.
   const { data: attendance, error } = await supabase
     .from("attendance")
     .select(
       ` 
                 member_id, 
                 events!inner ( 
-                    event_type 
+                  cabinet 
                 ) 
             `,
     )
-    .eq("events.event_type", "Corporate");
+    .eq("events.cabinet", "Corporate");
 
   if (error) {
     throw error;
@@ -66,10 +66,30 @@ export async function execute(interaction) {
     );
   });
 
-  // Send the completed Corporate report.
-  await interaction.reply({
-    content: `## Corporate Report\n\n` + lines.join("\n"),
+  // Discord limits each message to 2,000 characters soo we split large reports.
+  const reportChunks = [];
+  let currentChunk = "## Corporate Report\n\n";
 
+  for (const line of lines) {
+    if (currentChunk.length + line.length + 1 > 2000) {
+      reportChunks.push(currentChunk.trimEnd());
+      currentChunk = `${line}\n`;
+    } else {
+      currentChunk += `${line}\n`;
+    }
+  }
+
+  reportChunks.push(currentChunk.trimEnd());
+
+  await interaction.reply({
+    content: reportChunks[0],
     flags: MessageFlags.Ephemeral,
   });
+
+  for (const chunk of reportChunks.slice(1)) {
+    await interaction.followUp({
+      content: chunk,
+      flags: MessageFlags.Ephemeral,
+    });
+  }
 }
