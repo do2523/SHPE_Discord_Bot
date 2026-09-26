@@ -1,22 +1,44 @@
-import { MessageFlags, SlashCommandBuilder } from "discord.js";
+import { MessageFlagsBitField, SlashCommandBuilder } from "discord.js";
 
 import { supabase } from "../services/supabase.js";
-import { getOrCreateMember } from "../utils/members.js";
 import { isEboard } from "../utils/permissions.js";
 
 export const data = new SlashCommandBuilder()
   .setName("history")
-  .setDescription("View all events a member has attended");
+  .setDescription("View all events attended by a member")
+  .addStringOption((option) =>
+    option
+      .setName("member")
+      .setDescription("Discord username to look up")
+      .setRequired(true),
+  );
 
 export async function execute(interaction) {
   if (!isEboard(interaction)) {
     return interaction.reply({
       content: "Only E-board members can use this command.",
-      flags: MessageFlags.Ephemeral,
+      flags: MessageFlagsBitField.Flags.Ephemeral,
     });
   }
 
-  const member = await getOrCreateMember(interaction.user);
+  const username = interaction.options.getString("member", true).trim();
+
+  const { data: member, error: memberError } = await supabase
+    .from("members")
+    .select("id, discord_username")
+    .ilike("discord_username", username)
+    .maybeSingle();
+
+  if (memberError) {
+    throw memberError;
+  }
+
+  if (!member) {
+    return interaction.reply({
+      content: `No member found with the username ${username}.`,
+      flags: MessageFlagsBitField.Flags.Ephemeral,
+    });
+  }
 
   const { data: attendance, error } = await supabase
     .from("attendance")
@@ -39,8 +61,8 @@ export async function execute(interaction) {
 
   if (!attendance.length) {
     return interaction.reply({
-      content: "You have not attended any SHPE events yet.",
-      flags: MessageFlags.Ephemeral,
+      content: `${member.discord_username} has not attended any SHPE events yet.`,
+      flags: MessageFlagsBitField.Flags.Ephemeral,
     });
   }
 
@@ -52,7 +74,7 @@ export async function execute(interaction) {
   });
 
   await interaction.reply({
-    content: `## Your Event History\n\n${lines.join("\n")}`,
+    content: `## Event History: ${member.discord_username}\n\n${lines.join("\n")}`,
     flags: MessageFlags.Ephemeral,
   });
 }
