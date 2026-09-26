@@ -75,6 +75,6 @@ export async function execute(interaction) {
 
   await interaction.reply({
     content: `## Event History: ${member.discord_username}\n\n${lines.join("\n")}`,
-    flags: MessageFlags.Ephemeral,
+    flags: MessageFlagsBitField.Flags.Ephemeral,
   });
 }
