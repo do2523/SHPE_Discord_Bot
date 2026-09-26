@@ -11,7 +11,7 @@ import * as eventAttendance from "./commands/eventAttendance.js";
 import * as corporateStatus from "./commands/corporateStatus.js";
 import * as corporateReport from "./commands/corporateReport.js";
 import * as codes from "./commands/codes.js";
-import * as history from "./commands/History.js";
+import * as history from "./commands/history.js";
 
 // Put all command modules into one array.
 const commandModules = [
