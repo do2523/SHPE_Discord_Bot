@@ -24,7 +24,7 @@ export async function execute(interaction) {
     .from("events")
     .select("name, start_time, attendance_code")
     .order("start_time", { ascending: false })
-    .limit(5);
+    .limit(25);
 
   if (error) {
     throw error;
