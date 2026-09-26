@@ -10,6 +10,7 @@ import * as createEvent from "./commands/createEvent.js";
 import * as eventAttendance from "./commands/eventAttendance.js";
 import * as corporateStatus from "./commands/corporateStatus.js";
 import * as corporateReport from "./commands/corporateReport.js";
+import * as gbmReport from "./commands/gbmReport.js";
 import * as codes from "./commands/codes.js";
 import * as history from "./commands/history.js";
 
@@ -23,6 +24,7 @@ const commandModules = [
   eventAttendance,
   corporateStatus,
   corporateReport,
+  gbmReport,
   codes,
   history,
 ];

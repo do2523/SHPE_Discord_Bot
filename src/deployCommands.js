@@ -10,6 +10,7 @@ import { data as createEvent } from "./commands/createEvent.js";
 import { data as eventAttendance } from "./commands/eventAttendance.js";
 import { data as corporateStatus } from "./commands/corporateStatus.js";
 import { data as corporateReport } from "./commands/corporateReport.js";
+import { data as gbmReport } from "./commands/gbmReport.js";
 import { data as codes } from "./commands/codes.js";
 import { data as history } from "./commands/history.js";
 
@@ -23,6 +24,7 @@ const commands = [
   eventAttendance,
   corporateStatus,
   corporateReport,
+  gbmReport,
   codes,
   history,
 ].map((command) => command.toJSON());
