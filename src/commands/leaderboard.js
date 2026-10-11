@@ -7,10 +7,15 @@ export const data = new SlashCommandBuilder()
   .setName("leaderboard")
   .setDescription("View the SHPE points leaderboard");
 
-// Runs whenever someone uses /leaderboard.
-export async function execute(interaction) {
-  // Get all attendance records, member's Discord username, and the number of points for the event they attended.
-  const { data: records, error } = await supabase.from("attendance").select(`
+async function getAllAttendanceRecords() {
+  const pageSize = 1000;
+  const records = [];
+  let offset = 0;
+
+  while (true) {
+    const { data: page, error } = await supabase
+      .from("attendance")
+      .select(`
             member_id,
             members (
                 discord_username
@@ -18,11 +23,27 @@ export async function execute(interaction) {
             events (
                 points
             )
-        `);
+        `)
+      .range(offset, offset + pageSize - 1);
 
-  if (error) {
-    throw error;
+    if (error) {
+      throw error;
+    }
+
+    records.push(...page);
+
+    if (page.length < pageSize) {
+      return records;
+    }
+
+    offset += pageSize;
   }
+}
+
+// Runs whenever someone uses /leaderboard.
+export async function execute(interaction) {
+  // Get all attendance records, member's Discord username, and the number of points for the event they attended.
+  const records = await getAllAttendanceRecords();
 
   const scores = new Map();
 

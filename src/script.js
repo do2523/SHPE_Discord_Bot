@@ -6,13 +6,13 @@ import { supabase } from "./services/supabase.js";
 import { generateAttendanceCode } from "./utils/attendanceCode.js";
 
 const EVENT = {
-  name: "Corporate Committee Meeting 2",
-  cabinet: "Corporate",
+  name: "Fall Committee Meeting 4",
+  cabinet: "Technology",
   points: 2,
   location: "Classroom",
 
-  start_time: "2026-09-15T11:00:00-04:00",
-  end_time: "2026-09-15T15:30:00-04:00",
+  start_time: "2026-09-22T11:00:00-04:00",
+  end_time: "2026-09-22T15:30:00-04:00",
 };
 
 const CSV_PATH = "./event.csv";
