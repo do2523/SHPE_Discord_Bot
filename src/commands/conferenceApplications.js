@@ -26,7 +26,7 @@ export async function execute(interaction) {
 
   const lines = applications.map(
     (application) =>
-      `**${application.company}**\n${application.application_link}`,
+      `**${application.company}**\n[Application link](${application.application_link})`,
   );
 
   const chunks = [];
