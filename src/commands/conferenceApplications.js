@@ -7,6 +7,8 @@ export const data = new SlashCommandBuilder()
   .setName("conference-applications")
   .setDescription("View companies and application links for the conference");
 
+const responseFlags = MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds;
+
 // Runs whenever someone uses /conference-applications.
 export async function execute(interaction) {
   const { data: applications, error } = await supabase
@@ -20,7 +22,7 @@ export async function execute(interaction) {
   if (!applications.length) {
     return interaction.reply({
       content: "There are currently no conference applications.",
-      flags: MessageFlags.Ephemeral,
+      flags: responseFlags,
     });
   }
 
@@ -45,11 +47,13 @@ export async function execute(interaction) {
 
   await interaction.reply({
     content: chunks[0],
+    flags: responseFlags,
   });
 
   for (const chunk of chunks.slice(1)) {
     await interaction.followUp({
       content: chunk,
+      flags: responseFlags,
     });
   }
 }
