@@ -96,6 +96,10 @@ Displays attendance codes for relevant events.
 
 This command can be used to quickly view event attendance codes without having to look them up directly in the database.
 
+### `/conference-applications`
+
+Displays every conference application with its company name and application link.
+
 ---
 
 ## E-board Commands

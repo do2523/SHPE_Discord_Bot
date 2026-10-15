@@ -14,6 +14,7 @@ import * as gbmReport from "./commands/gbmReport.js";
 import * as codes from "./commands/codes.js";
 import * as history from "./commands/history.js";
 import * as updateHistory from "./commands/updateHistory.js";
+import * as conferenceApplications from "./commands/conferenceApplications.js";
 
 // Put all command modules into one array.
 const commandModules = [
@@ -29,6 +30,7 @@ const commandModules = [
   codes,
   history,
   updateHistory,
+  conferenceApplications,
 ];
 
 const commands = new Map(
