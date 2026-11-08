@@ -8,7 +8,7 @@ const TIME_ZONE = "America/New_York";
 // Build the /announcements slash command.
 export const data = new SlashCommandBuilder()
   .setName("announcements")
-  .setDescription("E-board only: list this week's calendar events (Mon-Sun)");
+  .setDescription("E-board only: announce next week's calendar events (Mon-Sun) to everyone");
 
 // Gets the next upcoming Monday 00:00 through the following Monday 00:00 (Mon-Sun).
 // If today is Monday, today counts as the start of the week.
@@ -74,19 +74,23 @@ export async function execute(interaction) {
     });
   }
 
-  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+  await interaction.deferReply();
 
   const { monday, nextMonday } = getWeekRange();
   const events = (await fetchCalendarEvents(monday, nextMonday)).filter(
     (event) => event.status !== "cancelled",
   );
 
-  const header = `# 📅 Events: ${monday.toFormat("LLL d")} - ${monday
+  const header = `@everyone
+# 📅 Events: ${monday.toFormat("LLL d")} - ${monday
     .plus({ days: 6 })
     .toFormat("LLL d")}\n\n`;
 
   if (!events.length) {
-    return interaction.editReply(`${header}No events on the calendar.`);
+    return interaction.editReply({
+      content: `${header}No events on the calendar.`,
+      allowedMentions: { parse: ["everyone"] },
+    });
   }
 
   // Group events by day (Monday - Sunday).
@@ -123,12 +127,12 @@ export async function execute(interaction) {
 
   chunks.push(current.trimEnd());
 
-  await interaction.editReply(chunks[0]);
+  await interaction.editReply({
+    content: chunks[0],
+    allowedMentions: { parse: ["everyone"] },
+  });
 
   for (const chunk of chunks.slice(1)) {
-    await interaction.followUp({
-      content: chunk,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.followUp({ content: chunk });
   }
 }
