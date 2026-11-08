@@ -8,19 +8,14 @@ const TIME_ZONE = "America/New_York";
 // Build the /announcements slash command.
 export const data = new SlashCommandBuilder()
   .setName("announcements")
-  .setDescription("E-board only: list this week's calendar events (Mon-Fri)");
+  .setDescription("E-board only: list this week's calendar events (Mon-Sun)");
 
-// Gets Monday 00:00 through Saturday 00:00 for the week to announce.
-// On Saturday/Sunday it looks at the upcoming week instead.
+// Gets Monday 00:00 through the following Monday 00:00 (Mon-Sun) for this week.
 function getWeekRange() {
   const now = DateTime.now().setZone(TIME_ZONE);
-  let monday = now.startOf("week"); // Luxon weeks start on Monday
+  const monday = now.startOf("week"); // Luxon weeks start on Monday
 
-  if (now.weekday >= 6) {
-    monday = monday.plus({ weeks: 1 });
-  }
-
-  return { monday, saturday: monday.plus({ days: 5 }) };
+  return { monday, nextMonday: monday.plus({ days: 7 }) };
 }
 
 // Pulls events from the Google Calendar API.
@@ -79,20 +74,20 @@ export async function execute(interaction) {
 
   await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-  const { monday, saturday } = getWeekRange();
-  const events = (await fetchCalendarEvents(monday, saturday)).filter(
+  const { monday, nextMonday } = getWeekRange();
+  const events = (await fetchCalendarEvents(monday, nextMonday)).filter(
     (event) => event.status !== "cancelled",
   );
 
   const header = `# 📅 Events: ${monday.toFormat("LLL d")} - ${monday
-    .plus({ days: 4 })
+    .plus({ days: 6 })
     .toFormat("LLL d")}\n\n`;
 
   if (!events.length) {
     return interaction.editReply(`${header}No events on the calendar.`);
   }
 
-  // Group events by day (Monday - Friday).
+  // Group events by day (Monday - Sunday).
   const days = new Map();
 
   for (const event of events) {
