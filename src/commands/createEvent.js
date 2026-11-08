@@ -23,17 +23,13 @@ export const data = new SlashCommandBuilder()
       .setDescription("SHPE cabinet")
       .setRequired(true)
       .addChoices(
-        { name: "Corporate", value: "Corporate" },
-        { name: "Technology", value: "Technology" },
-        {
-          name: "Professional Development",
-          value: "Professional Development",
-        },
-        {
-          name: "Community Outreach",
-          value: "Community Outreach",
-        },
-        { name: "Internal", value: "Internal" },
+        { name: "ProDev", value: "ProDev" },
+        { name: "SHPEtinas", value: "SHPEtinas" },
+        { name: "Volunteering", value: "Volunteering" },
+        { name: "Social", value: "Social" },
+        { name: "Projects", value: "Projects" },
+        { name: "GBM", value: "GBM" },
+        { name: "Other", value: "Other" },
       ),
   )
 
@@ -81,29 +77,12 @@ export const data = new SlashCommandBuilder()
       .setMaxValue(6),
   )
 
-  // Optional event type.
-  .addStringOption((option) =>
-    option
-      .setName("type")
-      .setDescription("Event type")
-      .setRequired(false)
-      .addChoices(
-        { name: "GBM", value: "GBM" },
-        { name: "Workshop", value: "Workshop" },
-        { name: "Corporate", value: "Corporate" },
-        { name: "Social", value: "Social" },
-        { name: "Volunteer", value: "Volunteer" },
-        { name: "Conference", value: "Conference" },
-        { name: "Other", value: "Other" },
-      ),
-  )
-
-  // Optional event description.
+  // Required event description.
   .addStringOption((option) =>
     option
       .setName("description")
       .setDescription("Event description")
-      .setRequired(false),
+      .setRequired(true),
   );
 
 // Runs whenever someone uses /create-event.
@@ -125,10 +104,7 @@ export async function execute(interaction) {
   const location = interaction.options.getString("location");
   const points = interaction.options.getInteger("points");
 
-  // These options are optional.
-  const eventType = interaction.options.getString("type") ?? null;
-
-  const description = interaction.options.getString("description") ?? null;
+  const description = interaction.options.getString("description");
 
   // Combine the date and start time into one Luxon DateTime object.
   const startTime = DateTime.fromFormat(
@@ -172,8 +148,6 @@ export async function execute(interaction) {
     .insert({
       name,
       cabinet,
-      // Database column names are different from our JavaScript variable names here.
-      event_type: eventType,
       description,
       location,
       points,

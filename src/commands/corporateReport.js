@@ -26,7 +26,7 @@ export async function execute(interaction) {
     throw membersError;
   }
 
-  // Get attendance records only for the Corporate cabinet.
+  // Get attendance records only for the Corporate and ProDev cabinets.
   const { data: attendance, error } = await supabase
     .from("attendance")
     .select(
@@ -37,7 +37,7 @@ export async function execute(interaction) {
                 ) 
             `,
     )
-    .eq("events.cabinet", "Corporate");
+    .in("events.cabinet", ["Corporate", "ProDev"]);
 
   if (error) {
     throw error;

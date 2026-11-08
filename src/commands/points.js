@@ -38,9 +38,9 @@ export async function execute(interaction) {
     0,
   );
 
-  // Keep only attendance records where the event belongs to the Corporate cabinet.
+  // Keep only attendance records where the event belongs to the Corporate or ProDev cabinet.
   const corporateEvents = records.filter(
-    (record) => record.events?.cabinet?.toLowerCase() === "corporate",
+    (record) => ["corporate", "prodev"].includes(record.events?.cabinet?.toLowerCase()),
   ).length;
 
   // Send the user's stats back privately.
