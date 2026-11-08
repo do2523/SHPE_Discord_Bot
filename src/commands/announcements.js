@@ -10,10 +10,12 @@ export const data = new SlashCommandBuilder()
   .setName("announcements")
   .setDescription("E-board only: list this week's calendar events (Mon-Sun)");
 
-// Gets Monday 00:00 through the following Monday 00:00 (Mon-Sun) for this week.
+// Gets the next upcoming Monday 00:00 through the following Monday 00:00 (Mon-Sun).
+// If today is Monday, today counts as the start of the week.
 function getWeekRange() {
-  const now = DateTime.now().setZone(TIME_ZONE);
-  const monday = now.startOf("week"); // Luxon weeks start on Monday
+  const today = DateTime.now().setZone(TIME_ZONE).startOf("day");
+  const daysUntilMonday = (8 - today.weekday) % 7; // Luxon: Monday = 1
+  const monday = today.plus({ days: daysUntilMonday });
 
   return { monday, nextMonday: monday.plus({ days: 7 }) };
 }
