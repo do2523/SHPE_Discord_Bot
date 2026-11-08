@@ -15,6 +15,7 @@ import { data as codes } from "./commands/codes.js";
 import { data as history } from "./commands/history.js";
 import { data as updateHistory } from "./commands/updateHistory.js";
 import { data as conferenceApplications } from "./commands/conferenceApplications.js";
+import { data as announcements } from "./commands/announcements.js";
 
 // command.toJSON() converts each SlashCommandBuilder object into a plain JSON object that Discord's API can understand.
 const commands = [
@@ -31,6 +32,7 @@ const commands = [
   history,
   updateHistory,
   conferenceApplications,
+  announcements,
 ].map((command) => command.toJSON());
 
 // Create a REST client that will communicate with Discord's API.

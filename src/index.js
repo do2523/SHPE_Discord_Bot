@@ -15,6 +15,7 @@ import * as codes from "./commands/codes.js";
 import * as history from "./commands/history.js";
 import * as updateHistory from "./commands/updateHistory.js";
 import * as conferenceApplications from "./commands/conferenceApplications.js";
+import * as announcements from "./commands/announcements.js";
 
 // Put all command modules into one array.
 const commandModules = [
@@ -31,6 +32,7 @@ const commandModules = [
   history,
   updateHistory,
   conferenceApplications,
+  announcements,
 ];
 
 const commands = new Map(
